@@ -15,7 +15,7 @@ app.get('/jkanime', async (req, res) => {
 
   try {
     const browser = await chromium.launch({
-      headless: false, // 🔁 IMPORTANTE: evitar bloqueo de JkAnime
+      headless: true, // 🟢 Obligatorio en Render
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
 
