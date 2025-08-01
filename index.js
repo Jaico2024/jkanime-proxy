@@ -1,12 +1,9 @@
-// index.js corregido y probado para Render con JkAnime
-
 const express = require('express');
 const cors = require('cors');
 const { chromium } = require('playwright');
 
 const app = express();
 
-// ✅ Habilitamos CORS
 app.use(cors());
 
 app.get('/jkanime', async (req, res) => {
@@ -15,20 +12,18 @@ app.get('/jkanime', async (req, res) => {
 
   try {
     const browser = await chromium.launch({
-      headless: true, // 🟢 Obligatorio en Render
+      headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
 
     const page = await browser.newPage();
-
-    // ✅ Construimos la URL de búsqueda
     const url = `https://jkanime.net/buscar/${query.toLowerCase().replace(/ /g, '-')}`;
+
     await page.goto(url, {
       waitUntil: 'domcontentloaded',
       timeout: 15000
     });
 
-    // ✅ Extraemos resultados
     const results = await page.$$eval('div.anime__item', items => {
       return items.map(el => {
         const title = el.querySelector('h5 a')?.innerText || 'Sin título';
@@ -47,12 +42,10 @@ app.get('/jkanime', async (req, res) => {
   }
 });
 
-// Ruta de prueba
 app.get('/', (req, res) => {
   res.send('✅ Servidor JkAnime Proxy en funcionamiento');
 });
 
-// 🚀 Puerto asignado automáticamente por Render
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
